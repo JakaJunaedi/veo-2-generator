@@ -1,19 +1,19 @@
 "use client"
 import React, { useState } from 'react';
-import { Copy, Download, RotateCcw, Wand2 } from 'lucide-react';
+import { Copy, Download, RotateCcw, Wand2, Edit3 } from 'lucide-react';
 
 interface FormData {
   subject: string;
   action: string;
-  setting: string;
+  expression: string;
+  location: string;
   timeOfDay: string;
-  weather: string;
-  mood: string;
-  style: string;
-  cameraAngle: string;
   cameraMovement: string;
   lighting: string;
-  colorGrading: string;
+  videoStyle: string;
+  videoMood: string;
+  soundMusic: string;
+  spokenWords: string;
   additionalDetails: string;
 }
 
@@ -26,15 +26,15 @@ const Home: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     subject: '',
     action: '',
-    setting: '',
-    timeOfDay: 'pagi',
-    weather: 'cerah',
-    mood: 'netral',
-    style: 'realistis',
-    cameraAngle: 'medium-shot',
-    cameraMovement: 'statis',
+    expression: '',
+    location: '',
+    timeOfDay: 'morning',
+    cameraMovement: 'static',
     lighting: 'natural',
-    colorGrading: 'natural',
+    videoStyle: 'realistic',
+    videoMood: 'neutral',
+    soundMusic: '',
+    spokenWords: '',
     additionalDetails: ''
   });
 
@@ -43,7 +43,94 @@ const Home: React.FC = () => {
     english: ''
   });
 
+  const [editableIndonesian, setEditableIndonesian] = useState<string>('');
   const [copied, setCopied] = useState<string>('');
+
+  // Options with translations
+  const timeOptions = [
+    { value: 'dawn', label: 'Dawn (Fajar)' },
+    { value: 'morning', label: 'Morning (Pagi)' },
+    { value: 'midday', label: 'Midday (Siang)' },
+    { value: 'afternoon', label: 'Afternoon (Sore)' },
+    { value: 'evening', label: 'Evening (Petang)' },
+    { value: 'night', label: 'Night (Malam)' },
+    { value: 'midnight', label: 'Midnight (Tengah Malam)' }
+  ];
+
+  const cameraMovementOptions = [
+    { value: 'static', label: 'Static (Statis)' },
+    { value: 'pan-left', label: 'Pan Left (Pan Kiri)' },
+    { value: 'pan-right', label: 'Pan Right (Pan Kanan)' },
+    { value: 'tilt-up', label: 'Tilt Up (Tilt Atas)' },
+    { value: 'tilt-down', label: 'Tilt Down (Tilt Bawah)' },
+    { value: 'zoom-in', label: 'Zoom In (Zoom Masuk)' },
+    { value: 'zoom-out', label: 'Zoom Out (Zoom Keluar)' },
+    { value: 'dolly-in', label: 'Dolly In (Dolly Masuk)' },
+    { value: 'dolly-out', label: 'Dolly Out (Dolly Keluar)' },
+    { value: 'crane-up', label: 'Crane Up (Crane Naik)' },
+    { value: 'crane-down', label: 'Crane Down (Crane Turun)' },
+    { value: 'handheld', label: 'Handheld (Genggam)' },
+    { value: 'steadicam', label: 'Steadicam (Steadicam)' },
+    { value: '3d-rotation', label: '3D Rotation (Rotasi 3D)' },
+    { value: 'orbital', label: 'Orbital (Orbital)' },
+    { value: 'push-in', label: 'Push In (Dorong Masuk)' },
+    { value: 'pull-out', label: 'Pull Out (Tarik Keluar)' },
+    { value: 'track-left', label: 'Track Left (Track Kiri)' },
+    { value: 'track-right', label: 'Track Right (Track Kanan)' },
+    { value: 'arc-shot', label: 'Arc Shot (Bidikan Busur)' },
+    { value: 'whip-pan', label: 'Whip Pan (Whip Pan)' },
+    { value: 'vertigo-effect', label: 'Vertigo Effect (Efek Vertigo)' },
+    { value: 'parallax', label: 'Parallax (Paralaks)' },
+    { value: 'dutch-angle', label: 'Dutch Angle (Sudut Belanda)' },
+    { value: 'bird-eye-view', label: 'Bird Eye View (Pandangan Mata Burung)' }
+  ];
+
+  const lightingOptions = [
+    { value: 'natural', label: 'Natural (Alami)' },
+    { value: 'golden-hour', label: 'Golden Hour (Jam Emas)' },
+    { value: 'blue-hour', label: 'Blue Hour (Jam Biru)' },
+    { value: 'dramatic', label: 'Dramatic (Dramatis)' },
+    { value: 'soft', label: 'Soft (Lembut)' },
+    { value: 'hard', label: 'Hard (Keras)' },
+    { value: 'backlit', label: 'Backlit (Cahaya Belakang)' },
+    { value: 'rim-lighting', label: 'Rim Lighting (Pencahayaan Tepi)' },
+    { value: 'low-key', label: 'Low Key (Kunci Rendah)' },
+    { value: 'high-key', label: 'High Key (Kunci Tinggi)' },
+    { value: 'neon', label: 'Neon (Neon)' },
+    { value: 'candlelight', label: 'Candlelight (Cahaya Lilin)' },
+    { value: 'moonlight', label: 'Moonlight (Cahaya Bulan)' },
+    { value: 'studio', label: 'Studio (Studio)' }
+  ];
+
+  const videoStyleOptions = [
+    { value: 'realistic', label: 'Realistic (Realistis)' },
+    { value: 'cinematic', label: 'Cinematic (Sinematik)' },
+    { value: 'documentary', label: 'Documentary (Dokumenter)' },
+    { value: 'vintage', label: 'Vintage (Vintage)' },
+    { value: 'retro', label: 'Retro (Retro)' },
+    { value: 'futuristic', label: 'Futuristic (Futuristik)' },
+    { value: 'minimalist', label: 'Minimalist (Minimalis)' },
+    { value: 'artistic', label: 'Artistic (Artistik)' },
+    { value: 'commercial', label: 'Commercial (Komersial)' },
+    { value: 'music-video', label: 'Music Video (Video Musik)' },
+    { value: 'noir', label: 'Noir (Noir)' },
+    { value: 'surreal', label: 'Surreal (Surealis)' }
+  ];
+
+  const videoMoodOptions = [
+    { value: 'neutral', label: 'Neutral (Netral)' },
+    { value: 'happy', label: 'Happy (Bahagia)' },
+    { value: 'sad', label: 'Sad (Sedih)' },
+    { value: 'dramatic', label: 'Dramatic (Dramatis)' },
+    { value: 'romantic', label: 'Romantic (Romantis)' },
+    { value: 'mysterious', label: 'Mysterious (Misterius)' },
+    { value: 'energetic', label: 'Energetic (Energik)' },
+    { value: 'calm', label: 'Calm (Tenang)' },
+    { value: 'tense', label: 'Tense (Tegang)' },
+    { value: 'inspiring', label: 'Inspiring (Menginspirasi)' },
+    { value: 'melancholic', label: 'Melancholic (Melankolis)' },
+    { value: 'euphoric', label: 'Euphoric (Euforis)' }
+  ];
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData(prev => ({
@@ -52,169 +139,152 @@ const Home: React.FC = () => {
     }));
   };
 
-  const generateEnglishPrompt = (): string => {
+  const generateDetailedPrompt = (isIndonesian: boolean = true): string => {
     const { 
-      subject, action, setting, timeOfDay, weather, mood, style, cameraAngle, cameraMovement, lighting, colorGrading, additionalDetails 
+      subject, action, expression, location, timeOfDay, cameraMovement, 
+      lighting, videoStyle, videoMood, soundMusic, spokenWords, additionalDetails 
     } = formData;
 
-    // Translation mappings
-    const timeTranslations: Record<string, string> = {
-      'pagi': 'morning',
-      'sore': 'afternoon',
-      'malam': 'night',
-    };
+    if (isIndonesian) {
+      let prompt = `Sebuah video ${videoStyle === 'realistic' ? 'realistis' : 
+        videoStyle === 'cinematic' ? 'sinematik' : 
+        videoStyle === 'documentary' ? 'dokumenter' :
+        videoStyle === 'vintage' ? 'vintage' :
+        videoStyle === 'retro' ? 'retro' :
+        videoStyle === 'futuristic' ? 'futuristik' :
+        videoStyle === 'minimalist' ? 'minimalis' :
+        videoStyle === 'artistic' ? 'artistik' :
+        videoStyle === 'commercial' ? 'komersial' :
+        videoStyle === 'music-video' ? 'video musik' :
+        videoStyle === 'noir' ? 'noir' :
+        videoStyle === 'surreal' ? 'surealis' : videoStyle} yang menampilkan ${subject}`;
 
-    const weatherTranslations: Record<string, string> = {
-      'cerah': 'sunny',
-      'berawan': 'cloudy',
-      'hujan': 'rainy',
-      'berkabut': 'foggy',
-      'bersalju': 'snowy',
-      'berangin': 'windy'
-    };
+      if (expression) {
+        prompt += ` dengan ekspresi ${expression}`;
+      }
 
-    const moodTranslations: Record<string, string> = {
-      'bahagia': 'happy',
-      'sedih': 'sad',
-      'dramatis': 'dramatic',
-      'romantis': 'romantic',
-      'misterius': 'mysterious',
-      'energik': 'energetic',
-      'tenang': 'calm',
-      'netral': 'neutral'
-    };
+      if (action) {
+        prompt += ` sedang ${action}`;
+      }
 
-    const styleTranslations: Record<string, string> = {
-      'realistis': 'realistic',
-      'sinematik': 'cinematic',
-      'kartun': 'cartoon',
-      'anime': 'anime',
-      'vintage': 'vintage',
-      'futuristik': 'futuristic',
-      'minimalis': 'minimalist'
-    };
+      if (location) {
+        prompt += ` di ${location}`;
+      }
 
-    const durationTranslations: Record<string, string> = {
-      'pendek': 'short duration',
-      'sedang': 'medium duration',
-      'panjang': 'long duration'
-    };
+      prompt += ` pada waktu ${timeOfDay === 'dawn' ? 'fajar' :
+        timeOfDay === 'morning' ? 'pagi' :
+        timeOfDay === 'midday' ? 'siang' :
+        timeOfDay === 'afternoon' ? 'sore' :
+        timeOfDay === 'evening' ? 'petang' :
+        timeOfDay === 'night' ? 'malam' :
+        timeOfDay === 'midnight' ? 'tengah malam' : timeOfDay}.`;
 
-    const cameraAngleTranslations: Record<string, string> = {
-      'close-up': 'close-up shot',
-      'medium-shot': 'medium shot',
-      'wide-shot': 'wide shot',
-      'extreme-close-up': 'extreme close-up',
-      'bird-eye-view': 'bird\'s eye view',
-      'low-angle': 'low angle shot',
-      'high-angle': 'high angle shot'
-    };
+      prompt += ` Video ini memiliki suasana ${videoMood === 'neutral' ? 'netral' :
+        videoMood === 'happy' ? 'bahagia' :
+        videoMood === 'sad' ? 'sedih' :
+        videoMood === 'dramatic' ? 'dramatis' :
+        videoMood === 'romantic' ? 'romantis' :
+        videoMood === 'mysterious' ? 'misterius' :
+        videoMood === 'energetic' ? 'energik' :
+        videoMood === 'calm' ? 'tenang' :
+        videoMood === 'tense' ? 'tegang' :
+        videoMood === 'inspiring' ? 'menginspirasi' :
+        videoMood === 'melancholic' ? 'melankolis' :
+        videoMood === 'euphoric' ? 'euforis' : videoMood}`;
 
-    const cameraMovementTranslations: Record<string, string> = {
-      'statis': 'static camera',
-      'pan': 'camera pan',
-      'tilt': 'camera tilt',
-      'zoom-in': 'zoom in',
-      'zoom-out': 'zoom out',
-      'dolly': 'dolly movement',
-      'handheld': 'handheld camera',
-      'steadicam': 'steadicam movement'
-    };
+      prompt += ` dengan pencahayaan ${lighting === 'natural' ? 'alami' :
+        lighting === 'golden-hour' ? 'jam emas' :
+        lighting === 'blue-hour' ? 'jam biru' :
+        lighting === 'dramatic' ? 'dramatis' :
+        lighting === 'soft' ? 'lembut' :
+        lighting === 'hard' ? 'keras' :
+        lighting === 'backlit' ? 'cahaya belakang' :
+        lighting === 'rim-lighting' ? 'pencahayaan tepi' :
+        lighting === 'low-key' ? 'kunci rendah' :
+        lighting === 'high-key' ? 'kunci tinggi' :
+        lighting === 'neon' ? 'neon' :
+        lighting === 'candlelight' ? 'cahaya lilin' :
+        lighting === 'moonlight' ? 'cahaya bulan' :
+        lighting === 'studio' ? 'studio' : lighting}.`;
 
-    const lightingTranslations: Record<string, string> = {
-      'natural': 'natural lighting',
-      'dramatis': 'dramatic lighting',
-      'lembut': 'soft lighting',
-      'keras': 'hard lighting',
-      'backlight': 'backlighting',
-      'golden-hour': 'golden hour lighting',
-      'blue-hour': 'blue hour lighting'
-    };
+      const cameraMovementTranslation = cameraMovementOptions.find(opt => opt.value === cameraMovement)?.label.split('(')[1]?.replace(')', '') || cameraMovement;
+      prompt += ` Gerakan kamera menggunakan teknik ${cameraMovementTranslation.toLowerCase()}.`;
 
-    const colorGradingTranslations: Record<string, string> = {
-      'natural': 'natural color grading',
-      'hangat': 'warm color grading',
-      'dingin': 'cool color grading',
-      'vintage': 'vintage color grading',
-      'high-contrast': 'high contrast',
-      'desaturated': 'desaturated colors',
-      'vibrant': 'vibrant colors'
-    };
+      if (soundMusic) {
+        prompt += ` Dengan latar musik atau suara: ${soundMusic}.`;
+      }
 
-    // Build English prompt
-    let englishPrompt = subject;
-    
-    if (action) {
-      englishPrompt += ` ${action}`;
+      if (spokenWords) {
+        prompt += ` Kalimat yang diucapkan: "${spokenWords}".`;
+      }
+
+      if (additionalDetails) {
+        prompt += ` Detail tambahan: ${additionalDetails}`;
+      }
+
+      return prompt;
+    } else {
+      // English version
+      let prompt = `A ${videoStyle} video featuring ${subject}`;
+
+      if (expression) {
+        prompt += ` with ${expression} expression`;
+      }
+
+      if (action) {
+        prompt += ` ${action}`;
+      }
+
+      if (location) {
+        prompt += ` in ${location}`;
+      }
+
+      prompt += ` during ${timeOfDay}.`;
+
+      prompt += ` The video has a ${videoMood} atmosphere with ${lighting} lighting.`;
+
+      prompt += ` Camera movement: ${cameraMovement.replace('-', ' ')}.`;
+
+      if (soundMusic) {
+        prompt += ` Background music or sound: ${soundMusic}.`;
+      }
+
+      if (spokenWords) {
+        prompt += ` Spoken words: "${spokenWords}".`;
+      }
+
+      if (additionalDetails) {
+        prompt += ` Additional details: ${additionalDetails}`;
+      }
+
+      return prompt;
     }
-    
-    if (setting) {
-      englishPrompt += ` in ${setting}`;
-    }
-    
-    englishPrompt += ` during ${timeTranslations[timeOfDay] || timeOfDay}`;
-    
-    if (weather !== 'cerah') {
-      englishPrompt += ` with ${weatherTranslations[weather] || weather} weather`;
-    }
-    
-    englishPrompt += `. ${moodTranslations[mood] || mood} atmosphere with ${styleTranslations[style] || style} style.`;
-    
-    // Technical specifications
-    englishPrompt += ` ${cameraAngleTranslations[cameraAngle] || cameraAngle} with ${cameraMovementTranslations[cameraMovement] || cameraMovement}.`;
-    englishPrompt += ` ${lightingTranslations[lighting] || lighting} and ${colorGradingTranslations[colorGrading] || colorGrading}.`;
-    
-    if (additionalDetails) {
-      englishPrompt += ` ${additionalDetails}`;
-    }
-
-    return englishPrompt;
   };
 
   const generatePrompt = () => {
-    const { 
-      subject, action, setting, timeOfDay, weather, mood, style,  cameraAngle, cameraMovement, lighting, colorGrading, additionalDetails 
-    } = formData;
-
-    if (!subject.trim()) {
+    if (!formData.subject.trim()) {
       alert('Mohon isi subjek terlebih dahulu');
       return;
     }
 
-    // Generate Indonesian prompt
-    let indonesianPrompt = `${subject}`;
-    
-    if (action) {
-      indonesianPrompt += ` sedang ${action}`;
-    }
-    
-    if (setting) {
-      indonesianPrompt += ` di ${setting}`;
-    }
-    
-    indonesianPrompt += ` pada waktu ${timeOfDay}`;
-    
-    if (weather !== 'cerah') {
-      indonesianPrompt += ` dengan cuaca ${weather}`;
-    }
-    
-    indonesianPrompt += `. Suasana ${mood} dengan gaya ${style}.`;
-    
-    // Technical specifications
-    indonesianPrompt += ` Sudut kamera ${cameraAngle} dengan gerakan kamera ${cameraMovement}.`;
-    indonesianPrompt += ` Pencahayaan ${lighting} dan pewarnaan ${colorGrading}.`;
-    
-    if (additionalDetails) {
-      indonesianPrompt += ` ${additionalDetails}`;
-    }
-
-    // Generate English prompt directly
-    const englishPrompt = generateEnglishPrompt();
+    const indonesianPrompt = generateDetailedPrompt(true);
+    const englishPrompt = generateDetailedPrompt(false);
 
     setGeneratedPrompts({
       indonesian: indonesianPrompt,
       english: englishPrompt
     });
+
+    setEditableIndonesian(indonesianPrompt);
+  };
+
+  const updateEnglishFromIndonesian = () => {
+    // This would ideally use a translation service, but for now we'll regenerate
+    const englishPrompt = generateDetailedPrompt(false);
+    setGeneratedPrompts(prev => ({
+      ...prev,
+      english: englishPrompt
+    }));
   };
 
   const copyToClipboard = async (text: string, type: string) => {
@@ -241,30 +311,31 @@ const Home: React.FC = () => {
     setFormData({
       subject: '',
       action: '',
-      setting: '',
-      timeOfDay: 'pagi',
-      weather: 'cerah',
-      mood: 'netral',
-      style: 'realistis',
-      cameraAngle: 'medium-shot',
-      cameraMovement: 'statis',
+      expression: '',
+      location: '',
+      timeOfDay: 'morning',
+      cameraMovement: 'static',
       lighting: 'natural',
-      colorGrading: 'natural',
+      videoStyle: 'realistic',
+      videoMood: 'neutral',
+      soundMusic: '',
+      spokenWords: '',
       additionalDetails: ''
     });
     setGeneratedPrompts({ indonesian: '', english: '' });
+    setEditableIndonesian('');
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
-       <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 md:p-8">
           <div className="text-center mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
               Generator Video Gemini Veo 2
             </h1>
             <p className="text-sm sm:text-base text-gray-600">
-              Buat prompt video AI yang detail dengan mudah
+              Buat prompt video AI yang detail dan profesional
             </p>
           </div>
 
@@ -275,225 +346,196 @@ const Home: React.FC = () => {
                 <h2 className="text-lg sm:text-xl font-semibold">Parameter Video</h2>
               </div>
 
-              {/* Subject */}
+              {/* 1. Subject */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Subject / Karakter *
+                  1. Subjek *
                 </label>
                 <input
                   type="text"
                   value={formData.subject}
                   onChange={(e) => handleInputChange('subject', e.target.value)}
-                  placeholder="Contoh: Seorang perempuan muda menggunakan pakaian tradisional"
+                  placeholder="Contoh: Seorang perempuan muda berusia 25 tahun"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-800"
                 />
               </div>
 
-              {/* Action */}
+              {/* 2. Action */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Action / Aktivitas
+                  2. Aksi
                 </label>
                 <input
                   type="text"
                   value={formData.action}
                   onChange={(e) => handleInputChange('action', e.target.value)}
-                  placeholder="Contoh: berjalan ke depan dan tersenyum"
+                  placeholder="Contoh: berjalan dengan percaya diri"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-800"
                 />
               </div>
 
-              {/* Setting */}
+              {/* 3. Expression */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Environment / Latar Belakang
+                  3. Ekspresi
                 </label>
                 <input
                   type="text"
-                  value={formData.setting}
-                  onChange={(e) => handleInputChange('setting', e.target.value)}
-                  placeholder="Contoh: di pegunungan berkabut"
+                  value={formData.expression}
+                  onChange={(e) => handleInputChange('expression', e.target.value)}
+                  placeholder="Contoh: tersenyum hangat dan percaya diri"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-800"
                 />
               </div>
 
-              {/* Time and Weather */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Waktu
-                  </label>
-                  <select
-                    value={formData.timeOfDay}
-                    onChange={(e) => handleInputChange('timeOfDay', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-gray-800"
-                  >
-                    <option value="pagi">Pagi</option>
-                    <option value="sore">Sore</option>
-                    <option value="malam">Malam</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Cuaca
-                  </label>
-                  <select
-                    value={formData.weather}
-                    onChange={(e) => handleInputChange('weather', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-gray-800"
-                  >
-                    <option value="cerah">Cerah</option>
-                    <option value="berawan">Berawan</option>
-                    <option value="hujan">Hujan</option>
-                    <option value="berkabut">Berkabut</option>
-                    <option value="bersalju">Bersalju</option>
-                    <option value="berangin">Berangin</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Mood and Style */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Suasana
-                  </label>
-                  <select
-                    value={formData.mood}
-                    onChange={(e) => handleInputChange('mood', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-gray-800"
-                  >
-                    <option value="netral">Netral</option>
-                    <option value="bahagia">Bahagia</option>
-                    <option value="sedih">Sedih</option>
-                    <option value="dramatis">Dramatis</option>
-                    <option value="romantis">Romantis</option>
-                    <option value="misterius">Misterius</option>
-                    <option value="energik">Energik</option>
-                    <option value="tenang">Tenang</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Gaya Visual
-                  </label>
-                  <select
-                    value={formData.style}
-                    onChange={(e) => handleInputChange('style', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-gray-800"
-                  >
-                    <option value="realistis">Realistis</option>
-                    <option value="sinematik">Sinematik</option>
-                    <option value="kartun">Kartun</option>
-                    <option value="anime">Anime</option>
-                    <option value="vintage">Vintage</option>
-                    <option value="futuristik">Futuristik</option>
-                    <option value="minimalis">Minimalis</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Camera Settings */}
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-medium text-gray-800 mb-4">Pengaturan Kamera</h3>
-                
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Sudut Kamera
-                    </label>
-                    <select
-                      value={formData.cameraAngle}
-                      onChange={(e) => handleInputChange('cameraAngle', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-gray-800"
-                    >
-                      <option value="close-up">Close-up</option>
-                      <option value="medium-shot">Medium Shot</option>
-                      <option value="wide-shot">Wide Shot</option>
-                      <option value="extreme-close-up">Extreme Close-up</option>
-                      <option value="bird-eye-view">Bird's Eye View</option>
-                      <option value="low-angle">Low Angle</option>
-                      <option value="high-angle">High Angle</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Camera work / Gerakan Kamera
-                    </label>
-                    <select
-                      value={formData.cameraMovement}
-                      onChange={(e) => handleInputChange('cameraMovement', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-gray-800"
-                    >
-                      <option value="statis">Statis</option>
-                      <option value="pan">Pan</option>
-                      <option value="tilt">Tilt</option>
-                      <option value="zoom-in">Zoom In</option>
-                      <option value="zoom-out">Zoom Out</option>
-                      <option value="dolly">Dolly</option>
-                      <option value="handheld">Handheld</option>
-                      <option value="steadicam">Steadicam</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Lighting Pencahayaan
-                    </label>
-                    <select
-                      value={formData.lighting}
-                      onChange={(e) => handleInputChange('lighting', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-gray-800"
-                    >
-                      <option value="natural">Natural</option>
-                      <option value="dramatis">Dramatis</option>
-                      <option value="lembut">Lembut</option>
-                      <option value="keras">Keras</option>
-                      <option value="backlight">Backlight</option>
-                      <option value="golden-hour">Golden Hour</option>
-                      <option value="blue-hour">Blue Hour</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Style / Gaya visual / Estetika
-                    </label>
-                    <select
-                      value={formData.colorGrading}
-                      onChange={(e) => handleInputChange('colorGrading', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-gray-800"
-                    >
-                      <option value="natural">Natural</option>
-                      <option value="hangat">Hangat</option>
-                      <option value="dingin">Dingin</option>
-                      <option value="vintage">Vintage</option>
-                      <option value="high-contrast">High Contrast</option>
-                      <option value="desaturated">Desaturated</option>
-                      <option value="vibrant">Vibrant</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-
-              {/* Additional Details */}
+              {/* 4. Location */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Detail Tambahan
+                  4. Tempat
+                </label>
+                <input
+                  type="text"
+                  value={formData.location}
+                  onChange={(e) => handleInputChange('location', e.target.value)}
+                  placeholder="Contoh: taman kota yang hijau dengan bunga-bunga bermekaran"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-800"
+                />
+              </div>
+
+              {/* 5. Time */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  5. Waktu
+                </label>
+                <select
+                  value={formData.timeOfDay}
+                  onChange={(e) => handleInputChange('timeOfDay', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-gray-800"
+                >
+                  {timeOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 6. Camera Movement */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  6. Gerakan Kamera
+                </label>
+                <select
+                  value={formData.cameraMovement}
+                  onChange={(e) => handleInputChange('cameraMovement', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-gray-800"
+                >
+                  {cameraMovementOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 7. Lighting */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  7. Pencahayaan
+                </label>
+                <select
+                  value={formData.lighting}
+                  onChange={(e) => handleInputChange('lighting', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-gray-800"
+                >
+                  {lightingOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 8. Video Style */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  8. Gaya Video
+                </label>
+                <select
+                  value={formData.videoStyle}
+                  onChange={(e) => handleInputChange('videoStyle', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-gray-800"
+                >
+                  {videoStyleOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 9. Video Mood */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  9. Suasana Video
+                </label>
+                <select
+                  value={formData.videoMood}
+                  onChange={(e) => handleInputChange('videoMood', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-gray-800"
+                >
+                  {videoMoodOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 10. Sound/Music */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  10. Suara atau Musik
+                </label>
+                <input
+                  type="text"
+                  value={formData.soundMusic}
+                  onChange={(e) => handleInputChange('soundMusic', e.target.value)}
+                  placeholder="Contoh: musik jazz lembut dengan suara alam"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-800"
+                />
+              </div>
+
+              {/* 11. Spoken Words */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  11. Kalimat yang Diucapkan
+                </label>
+                <input
+                  type="text"
+                  value={formData.spokenWords}
+                  onChange={(e) => handleInputChange('spokenWords', e.target.value)}
+                  placeholder="Contoh: Selamat pagi, hari ini akan menjadi hari yang indah"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-800"
+                />
+              </div>
+
+              {/* 12. Additional Details */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  12. Detail Tambahan
                 </label>
                 <textarea
                   value={formData.additionalDetails}
                   onChange={(e) => handleInputChange('additionalDetails', e.target.value)}
-                  placeholder="Tambahkan detail khusus seperti efek, musik, transisi, dll."
+                  placeholder="Tambahkan detail khusus seperti kostum, efek visual, transisi, dll."
                   rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-800"
                 />
               </div>
 
               {/* Action Buttons */}
-               <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={generatePrompt}
                   className="flex-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-3 rounded-lg font-medium hover:from-purple-600 hover:to-blue-600 transition-all duration-200 flex items-center justify-center gap-2"
@@ -512,95 +554,210 @@ const Home: React.FC = () => {
             </div>
 
             {/* Results Section */}
-            <div className="space-y-5">
+            {(generatedPrompts.indonesian || generatedPrompts.english) && (
+              <div className="space-y-5">
                 <div className="bg-gradient-to-r from-green-500 to-teal-500 text-white p-3 rounded-lg">
                   <h2 className="text-lg sm:text-xl font-semibold">Hasil Prompt</h2>
                 </div>
 
-              {/* Indonesian Prompt */}
-              {generatedPrompts.indonesian && (
-                <div className="bg-blue-50 rounded-lg p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-semibold text-blue-800">
-                      Prompt Bahasa Indonesia
-                    </h3>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => copyToClipboard(generatedPrompts.indonesian, 'id')}
-                        className="p-2 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors duration-200"
-                        title="Copy ke clipboard"
-                      >
-                        <Copy className="w-4 h-4 text-blue-600" />
-                      </button>
-                      <button
-                        onClick={() => downloadPrompt(generatedPrompts.indonesian, 'prompt-indonesia.txt')}
-                        className="p-2 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors duration-200"
-                        title="Download prompt"
-                      >
-                        <Download className="w-4 h-4 text-blue-600" />
-                      </button>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Indonesian Prompt - Editable */}
+                  <div className="bg-blue-50 rounded-lg p-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-lg font-semibold text-blue-800">
+                        Prompt Bahasa Indonesia (Editable)
+                      </h3>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => copyToClipboard(editableIndonesian, 'id')}
+                          className="p-2 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors duration-200"
+                          title="Copy ke clipboard"
+                        >
+                          <Copy className="w-4 h-4 text-blue-600" />
+                        </button>
+                        <button
+                          onClick={() => downloadPrompt(editableIndonesian, 'prompt-indonesia.txt')}
+                          className="p-2 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors duration-200"
+                          title="Download prompt"
+                        >
+                          <Download className="w-4 h-4 text-blue-600" />
+                        </button>
+                      </div>
+                    </div>
+                    <textarea
+                      value={editableIndonesian}
+                      onChange={(e) => setEditableIndonesian(e.target.value)}
+                      className="w-full h-40 bg-white rounded-lg p-4 border border-blue-200 text-gray-800 leading-relaxed resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                    <button
+                      onClick={updateEnglishFromIndonesian}
+                      className="mt-3 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center gap-2"
+                    >
+                      <Edit3 className="w-4 h-4" />
+                      Update English Version
+                    </button>
+                    {copied === 'id' && (
+                      <p className="text-green-600 text-sm mt-2">✓ Copied to clipboard!</p>
+                    )}
+                  </div>
+
+                  {/* English Prompt - Read Only */}
+                  <div className="bg-green-50 rounded-lg p-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-lg font-semibold text-green-800">
+                        English Prompt (Final)
+                      </h3>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => copyToClipboard(generatedPrompts.english, 'en')}
+                          className="p-2 bg-green-100 hover:bg-green-200 rounded-lg transition-colors duration-200"
+                          title="Copy to clipboard"
+                        >
+                          <Copy className="w-4 h-4 text-green-600" />
+                        </button>
+                        <button
+                          onClick={() => downloadPrompt(generatedPrompts.english, 'prompt-english.txt')}
+                          className="p-2 bg-green-100 hover:bg-green-200 rounded-lg transition-colors duration-200"
+                          title="Download prompt"
+                        >
+                          <Download className="w-4 h-4 text-green-600" />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-green-200 h-40 overflow-y-auto">
+                      <p className="text-gray-800 leading-relaxed">
+                        {generatedPrompts.english}
+                      </p>
+                    </div>
+                    {copied === 'en' && (
+                      <p className="text-green-600 text-sm mt-2">✓ Copied to clipboard!</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Usage Tips */}
+                <div className="bg-yellow-50 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-yellow-800 mb-3">
+                    Tips Penggunaan
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-yellow-700 text-sm">
+                    <div>
+                      <h4 className="font-medium mb-2">Subjek & Aksi:</h4>
+                      <ul className="space-y-1">
+                        <li>• Deskripsikan subjek dengan detail spesifik</li>
+                        <li>• Gunakan aksi yang jelas dan mudah dipahami</li>
+                        <li>• Tambahkan ekspresi untuk hasil lebih hidup</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Teknis:</h4>
+                      <ul className="space-y-1">
+                        <li>• Pilih gerakan kamera yang sesuai dengan mood</li>
+                        <li>• Sesuaikan pencahayaan dengan waktu dan tempat</li>
+                        <li>• Kombinasikan gaya dan suasana untuk efek maksimal</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Audio:</h4>
+                      <ul className="space-y-1">
+                        <li>• Deskripsikan musik/suara yang mendukung mood</li>
+                        <li>• Kalimat yang diucapkan akan tetap dalam bahasa asli</li>
+                        <li>• Gunakan detail tambahan untuk kontrol presisi</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Editing:</h4>
+                      <ul className="space-y-1">
+                        <li>• Edit prompt Indonesia sesuai kebutuhan</li>
+                        <li>• Klik "Update English Version" untuk sinkronisasi</li>
+                        <li>• Simpan kedua versi untuk referensi</li>
+                      </ul>
                     </div>
                   </div>
-                  <div className="bg-white rounded-lg p-4 border border-blue-200">
-                    <p className="text-gray-800 leading-relaxed">
-                      {generatedPrompts.indonesian}
-                    </p>
-                  </div>
-                  {copied === 'id' && (
-                    <p className="text-green-600 text-sm mt-2">✓ Copied to clipboard!</p>
-                  )}
                 </div>
-              )}
 
-              {/* English Prompt */}
-              {generatedPrompts.english && (
-                <div className="bg-green-50 rounded-lg p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-semibold text-green-800">
-                      English Prompt
-                    </h3>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => copyToClipboard(generatedPrompts.english, 'en')}
-                        className="p-2 bg-green-100 hover:bg-green-200 rounded-lg transition-colors duration-200"
-                        title="Copy to clipboard"
-                      >
-                        <Copy className="w-4 h-4 text-green-600" />
-                      </button>
-                      <button
-                        onClick={() => downloadPrompt(generatedPrompts.english, 'prompt-english.txt')}
-                        className="p-2 bg-green-100 hover:bg-green-200 rounded-lg transition-colors duration-200"
-                        title="Download prompt"
-                      >
-                        <Download className="w-4 h-4 text-green-600" />
-                      </button>
+                {/* Camera Movement Guide */}
+                <div className="bg-purple-50 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-purple-800 mb-3">
+                    Panduan Gerakan Kamera
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-purple-700 text-sm">
+                    <div>
+                      <h4 className="font-medium mb-2">Gerakan Dasar:</h4>
+                      <ul className="space-y-1">
+                        <li>• <strong>Static:</strong> Kamera diam, fokus subjek</li>
+                        <li>• <strong>Pan:</strong> Kamera bergerak horizontal</li>
+                        <li>• <strong>Tilt:</strong> Kamera bergerak vertikal</li>
+                        <li>• <strong>Zoom:</strong> Perubahan focal length</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Gerakan Lanjutan:</h4>
+                      <ul className="space-y-1">
+                        <li>• <strong>Dolly:</strong> Kamera bergerak maju/mundur</li>
+                        <li>• <strong>Crane:</strong> Kamera naik/turun</li>
+                        <li>• <strong>Orbital:</strong> Kamera mengelilingi subjek</li>
+                        <li>• <strong>3D Rotation:</strong> Rotasi kompleks</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Efek Khusus:</h4>
+                      <ul className="space-y-1">
+                        <li>• <strong>Vertigo:</strong> Zoom + dolly berlawanan</li>
+                        <li>• <strong>Whip Pan:</strong> Pan sangat cepat</li>
+                        <li>• <strong>Dutch Angle:</strong> Kamera miring</li>
+                        <li>• <strong>Parallax:</strong> Efek kedalaman</li>
+                      </ul>
                     </div>
                   </div>
-                  <div className="bg-white rounded-lg p-4 border border-green-200">
-                    <p className="text-gray-800 leading-relaxed">
-                      {generatedPrompts.english}
-                    </p>
-                  </div>
-                  {copied === 'en' && (
-                    <p className="text-green-600 text-sm mt-2">✓ Copied to clipboard!</p>
-                  )}
                 </div>
-              )}
 
-              {/* Usage Tips */}
-              <div className="bg-yellow-50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-yellow-800 mb-3">
-                  Tips Penggunaan
-                </h3>
-                <ul className="text-yellow-700 space-y-2 text-sm">
-                  <li>• Isi subjek dengan deskripsi yang jelas dan spesifik</li>
-                  <li>• Kombinasikan berbagai parameter untuk hasil yang unik</li>
-                  <li>• Gunakan detail tambahan untuk kontrol yang lebih presisi</li>
-                  <li>• Eksperimen dengan sudut dan gerakan kamera untuk efek dramatis</li>
-                  <li>• Sesuaikan pencahayaan dengan mood yang diinginkan</li>
-                </ul>
+                {/* Lighting Guide */}
+                <div className="bg-orange-50 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-orange-800 mb-3">
+                    Panduan Pencahayaan
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-orange-700 text-sm">
+                    <div>
+                      <h4 className="font-medium mb-2">Pencahayaan Alami:</h4>
+                      <ul className="space-y-1">
+                        <li>• <strong>Golden Hour:</strong> 1 jam setelah sunrise/sebelum sunset</li>
+                        <li>• <strong>Blue Hour:</strong> Saat transisi siang-malam</li>
+                        <li>• <strong>Natural:</strong> Cahaya matahari langsung</li>
+                        <li>• <strong>Moonlight:</strong> Cahaya bulan, atmosfer misterius</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Pencahayaan Buatan:</h4>
+                      <ul className="space-y-1">
+                        <li>• <strong>Studio:</strong> Pencahayaan terkontrol, profesional</li>
+                        <li>• <strong>Neon:</strong> Cahaya neon, efek urban</li>
+                        <li>• <strong>Candlelight:</strong> Cahaya lilin, romantis/dramatis</li>
+                        <li>• <strong>Rim Lighting:</strong> Cahaya tepi, siluet</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Teknik Pencahayaan:</h4>
+                      <ul className="space-y-1">
+                        <li>• <strong>Soft Light:</strong> Cahaya lembut, bayangan halus</li>
+                        <li>• <strong>Hard Light:</strong> Cahaya keras, kontras tinggi</li>
+                        <li>• <strong>Backlit:</strong> Cahaya dari belakang subjek</li>
+                        <li>• <strong>Low/High Key:</strong> Dominasi bayangan/cahaya</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Mood Pencahayaan:</h4>
+                      <ul className="space-y-1">
+                        <li>• <strong>Dramatic:</strong> Kontras tinggi, bayangan kuat</li>
+                        <li>• <strong>Romantic:</strong> Cahaya hangat, lembut</li>
+                        <li>• <strong>Mystery:</strong> Pencahayaan tidak merata</li>
+                        <li>• <strong>Commercial:</strong> Pencahayaan merata, bersih</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
